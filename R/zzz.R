@@ -10,5 +10,5 @@ md <- NULL
   }
   
   # Delay load the module
-  md <<- reticulate::import("megadetector", delay_load = TRUE)
+  md <<- reticulate::import("detection", delay_load = TRUE)
 }
