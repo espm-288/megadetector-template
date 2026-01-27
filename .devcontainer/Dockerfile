@@ -1,13 +1,15 @@
 FROM ghcr.io/rocker-org/ml:latest
 
-# Install system dependencies required by OpenCV and other tools
-# libgl1-mesa-dev is needed for opencv-python if not using the headless version
-# python3-venv is helpful for some pip/venv operations
+# NB_USER corresponds to the default user in the rocker images (usually rstudio)
+ARG NB_USER=ubuntu
+
+# Install system dependencies required by OpenCV
+# libgl1 is the vendor-neutral GL runtime (provides libGL.so.1) needed by opencv-python
+# libglib2.0-0 is typically needed as well
 USER root
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-dev \
+    libgl1 \
     libglib2.0-0 \
-    python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-USER rstudio
+USER ${NB_USER}
