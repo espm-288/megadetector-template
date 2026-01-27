@@ -1,6 +1,9 @@
 {
   "name": "MegaDetector R Package",
-  "image": "ghcr.io/rocker-org/ml:latest",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "customizations": {
     "vscode": {
       "extensions": [

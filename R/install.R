@@ -9,9 +9,34 @@
 #'
 #' @export
 install_megadetector <- function(method = "auto", conda = "auto", version = "default", pip = TRUE, ...) {
+  
+  # Core dependencies that are best installed via conda if possible
+  conda_deps <- c(
+    "pandas", "requests", "matplotlib", "seaborn", 
+    "scikit-learn", "numpy", "pillow", "pyyaml", "tqdm", "humanfriendly"
+  )
+  
+  # If we are using conda, try to install these first
+  # This helps leverage pre-compiled binaries and avoid pip compiling from source
+  if (method == "conda" || (method == "auto" && !is.null(tryCatch(reticulate::conda_binary(), error=function(e) NULL)))) {
+    
+    # Check if we are in an environment that already has torch (like rocker/ml)
+    # If so, we do NOT want to reinstall/upgrade it via pip or conda if possible
+    has_torch <- reticulate::py_module_available("torch")
+    
+    tryCatch({
+      reticulate::conda_install(packages = conda_deps, conda = conda, pip = FALSE, ...)
+    }, error = function(e) {
+      warning("Failed to install conda dependencies: ", e$message)
+    })
+  }
+
   package <- "megadetector"
   if (version != "default") {
     package <- paste0("megadetector==", version)
   }
+  
+  # Install megadetector via pip
+  # We use pip = TRUE explicitly. 
   reticulate::py_install(package, method = method, conda = conda, pip = pip, ...)
 }
