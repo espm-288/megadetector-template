@@ -4,11 +4,11 @@
 \alias{load_model}
 \title{Load MegaDetector Model}
 \usage{
-load_model(model_file = "MDV5A")
+load_model(model_file = NULL)
 }
 \arguments{
 \item{model_file}{Path to the checkpoint file or a model identifier (e.g., "MDV5A", "MDV5B").
-If a reserved name like "MDV5A" is used, the package may download the weights automatically.}
+If NULL or a specific identifier, the model will be downloaded to the cache if needed.}
 }
 \value{
 A loaded model object (Python object).

@@ -1,21 +1,72 @@
+#' Download MegaDetector Model
+#'
+#' Downloads a MegaDetector model to the user's cache directory.
+#'
+#' @param model Model identifier (default "MDV5A").
+#' @param force If TRUE, force download even if the file exists.
+#' @return Path to the downloaded model file.
+#' @export
+download_model <- function(model = "MDV5A", force = FALSE) {
+  
+  # Define available models
+  models <- list(
+    "MDV5A" = "https://github.com/agentmorris/MegaDetector/releases/download/v5.0/md_v5a.0.0.pt",
+    "MDV5B" = "https://github.com/agentmorris/MegaDetector/releases/download/v5.0/md_v5b.0.0.pt"
+  )
+  
+  if (!model %in% names(models)) {
+    cli::cli_abort("Unknown model: {.val {model}}. Available models: {.val {names(models)}}")
+  }
+  
+  url <- models[[model]]
+  cache_dir <- tools::R_user_dir("megadetector", which = "cache")
+  if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
+  
+  dest <- file.path(cache_dir, paste0(tolower(model), ".pt"))
+  
+  if (file.exists(dest) && !force) {
+    cli::cli_alert_success("Model {.val {model}} found in cache: {.path {dest}}")
+    return(dest)
+  }
+  
+  cli::cli_alert_info("Downloading {.val {model}} to cache...")
+  tryCatch({
+    options(timeout = 300) # Ensure enough time for large download
+    download.file(url, dest, mode = "wb", quiet = FALSE)
+    cli::cli_alert_success("Downloaded {.val {model}} successfully.")
+  }, error = function(e) {
+    cli::cli_abort("Failed to download model: {e$message}")
+  })
+  
+  return(dest)
+}
+
 #' Load MegaDetector Model
 #'
 #' Loads the MegaDetector model.
 #'
 #' @param model_file Path to the checkpoint file or a model identifier (e.g., "MDV5A", "MDV5B").
-#'   If a reserved name like "MDV5A" is used, the package may download the weights automatically.
+#'   If NULL or a specific identifier, the model will be downloaded to the cache if needed.
 #' @return A loaded model object (Python object).
 #' @export
-load_model <- function(model_file = "MDV5A") {
-  if (is.null(md)) stop("MegaDetector module not loaded.")
+load_model <- function(model_file = NULL) {
+  if (is.null(md)) cli::cli_abort("MegaDetector module not loaded.")
 
+  # Handle defaults
+  if (is.null(model_file)) {
+    model_file <- download_model("MDV5A")
+  } else if (model_file %in% c("MDV5A", "MDV5B")) {
+    model_file <- download_model(model_file)
+  }
+  
   # run_detector might not be exposed in detection module, import explicitly
   rd <- tryCatch({
     reticulate::import("megadetector.detection.run_detector")
   }, error = function(e) {
-    stop("Could not import megadetector.detection.run_detector: ", e$message)
+    cli::cli_abort("Could not import megadetector.detection.run_detector: {e$message}")
   })
 
+  cli::cli_alert_info("Loading model from {.path {model_file}}...")
   return(rd$load_detector(model_file))
 }
 
