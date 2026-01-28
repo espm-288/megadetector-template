@@ -11,9 +11,9 @@ load_model <- function(model_file = "MDV5A") {
 
   # run_detector might not be exposed in detection module, import explicitly
   rd <- tryCatch({
-    reticulate::import("detection.run_detector")
+    reticulate::import("megadetector.detection.run_detector")
   }, error = function(e) {
-    stop("Could not import detection.run_detector: ", e$message)
+    stop("Could not import megadetector.detection.run_detector: ", e$message)
   })
 
   return(rd$load_detector(model_file))
@@ -30,13 +30,35 @@ load_model <- function(model_file = "MDV5A") {
 detect_image <- function(model, image_file) {
   # if (is.null(md)) stop("MegaDetector module not loaded.") # Disabled check as 'megadetector' module doesn't exist
   
-  rd <- tryCatch({
-    reticulate::import("detection.run_detector")
+  # Use cli for errors
+  # Import visualization utils to load image
+  vis_utils <- tryCatch({
+    reticulate::import("megadetector.visualization.visualization_utils")
   }, error = function(e) {
-    stop("Could not import detection.run_detector: ", e$message)
+    cli::cli_abort("Could not import megadetector.visualization.visualization_utils: {e$message}")
+  })
+
+  # Load image using python utility
+  image <- tryCatch({
+    vis_utils$load_image(image_file)
+  }, error = function(e) {
+    cli::cli_abort("Failed to load image: {e$message}")
   })
   
-  return(rd$run_detector_on_image(model, image_file))
+  # Run detection
+  # generate_detections_one_image(image, image_id, detection_threshold, image_size=None, augment=False)
+  result <- model$generate_detections_one_image(image, image_file)
+  
+  detections <- result$detections
+  
+  # Sort by confidence descending if detections exist
+  if (length(detections) > 1) {
+    confs <- sapply(detections, function(x) x$conf)
+    detections <- detections[order(confs, decreasing = TRUE)]
+  }
+  
+  # Return just the detections list
+  return(detections)
 }
 
 #' Get Classification from Detections
