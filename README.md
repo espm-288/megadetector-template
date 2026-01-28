@@ -5,7 +5,8 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/boettiger-lab/megadetector-template/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/boettiger-lab/megadetector-template/actions/workflows/check-standard.yaml)
+[![R-CMD-check](https://github.com/boettiger-lab/megadetector/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/boettiger-lab/megadetector/actions/workflows/check-standard.yaml)
+[![Docker](https://github.com/boettiger-lab/megadetector/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/boettiger-lab/megadetector/actions/workflows/docker-publish.yml)
 <!-- badges: end -->
 
 The `megadetector` package provides an R wrapper for the
@@ -19,7 +20,7 @@ You can install the package from GitHub:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("boettiger-lab/megadetector-template")
+remotes::install_github("boettiger-lab/megadetector")
 ```
 
 ## Setup
