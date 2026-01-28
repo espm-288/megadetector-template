@@ -3,7 +3,7 @@ Title: Wrapper for Python MegaDetector
 Version: 0.1.0
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: R wrapper for the Python megadetector package.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 

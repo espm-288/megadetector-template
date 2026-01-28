@@ -27,7 +27,7 @@ You can install the package from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("boettiger-lab/megadetector-template")
+remotes::install_github("boettiger-lab/megadetector")
 ```
 
 ## Setup

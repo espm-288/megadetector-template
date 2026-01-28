@@ -13,3 +13,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 USER ${NB_USER}
+
+RUN R -e 'remotes::install_github("boettiger-lab/megadetector"); library(megadetector); install_megadetector()'
+

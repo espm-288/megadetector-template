@@ -7,3 +7,7 @@
 __pycache__
 /src
 /docs
+
+# Ignore check logs
+check.log
+devtools_check.log
