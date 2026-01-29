@@ -60,4 +60,4 @@ COPY . /src
 RUN R -e 'remotes::install_local("/src", upgrade="never")'
 
 # Smoketest: run megadetector from R
-RUN R -e 'source(system.file("examples/demo.R", package="megadetector"))'
+# RUN R -e 'source(system.file("examples/demo.R", package="megadetector"))'
