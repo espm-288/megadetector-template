@@ -20,7 +20,6 @@ RUN mamba install -y -c conda-forge \
     jsonpickle \
     python-dateutil \
     send2trash \
-    mkl \
     pytorch \
     torchvision \
     libmamba \
