@@ -20,6 +20,8 @@ install_megadetector(
 
 \item{version}{Version of the package to install.}
 
+\item{pip}{If TRUE, use pip for installation.}
+
 \item{force}{If TRUE, force reinstallation even if already present.}
 
 \item{...}{Additional arguments passed to \code{reticulate::py_install}.}
